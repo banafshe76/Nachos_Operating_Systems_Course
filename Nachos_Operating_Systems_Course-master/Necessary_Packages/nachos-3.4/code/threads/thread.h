@@ -92,7 +92,9 @@ class Thread {
     // basic thread operations
 	void RunToSetTime(VoidFunctionPtr func, int arg);
 
-    void Fork(VoidFunctionPtr func, int arg); 	// Make thread run (*func)(arg)
+    int priority=0;////////////////////////////////////////////////////////////////////bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+    int measure=0;
+    void Fork(VoidFunctionPtr func, int arg,int p); 	// Make thread run (*func)(arg)//////////////////bbbbbbbbbbbbbb
     void Yield();  				// Relinquish the CPU if any 
 						// other thread is runnable
     void Sleep();  				// Put the thread to sleep and 

@@ -35,7 +35,7 @@ void SimpleThread1(int which)
     int num;
     for (num = 0; num < 5; num++)
 		{
-		sleep(2);
+		sleep(1);
 		printf("*** thread %d looped %d times\n", which, num);
         currentThread->Yield();
 		}
@@ -46,7 +46,7 @@ SimpleThread2(int which)
 	int num;
 	for (num = 0; num < 5; num++)
 		{
-		sleep(3);
+		sleep(2);
 		printf("*** thread %d looped %d times\n", which, num);
 		currentThread->Yield();
 		}
@@ -58,7 +58,7 @@ SimpleThread3(int which)
     
     for (num = 0; num < 5; num++) 
 		{
-		sleep(1);
+		sleep(3);
 		printf("*** thread %d looped %d times\n", which, num);
 		currentThread->Yield();
 		}
@@ -91,13 +91,14 @@ SimpleThread4(int which)
 
 void ThreadTest1()
 {
-	Thread * t1[4];
+	Thread * t1[5];
 	
 	
 		t1[0] = new Thread("1");
 		t1[1] = new Thread("2");
 		t1[2] = new Thread("3");	
-		t1[3] = new Thread("4");
+		t1[3] = new Thread("4");	
+		t1[4] = new Thread("5");
 		
 	std::cout<<"threadtest1\n";
     DEBUG('t', "Entering ThreadTest1");
@@ -107,10 +108,11 @@ void ThreadTest1()
     
 	
 		
-	t1[0]->Fork( SimpleThread1, 1);
-	t1[1]->Fork( SimpleThread2, 2);
-	t1[2]->Fork( SimpleThread3, 3);
-	t1[3]->Fork( SimpleThread4, 4);
+	t1[0]->Fork( SimpleThread1, 1,1);
+	t1[1]->Fork( SimpleThread2, 2,4);
+	t1[2]->Fork( SimpleThread3, 3,3);
+	t1[3]->Fork( SimpleThread4, 4,2);
+	t1[4]->Fork( SimpleThread1, 5,5);
 	
 	
 

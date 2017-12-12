@@ -23,6 +23,7 @@ class Scheduler {
     ~Scheduler();			// De-allocate ready list
 
     void ReadyToRun(Thread* thread);	// Thread can be dispatched.
+    void ReadyToRun2(Thread* thread);
     
     void ReadyToFirstRun (Thread *thread);
     
@@ -32,8 +33,13 @@ class Scheduler {
     void Print();			// Print contents of ready list
 	void setToTime();
 	int aryTime[10];
+	void halfFunc(); /////////////////////////////////////////////////////////////////////////////
+	bool b;//////////////////////////////////////////////////////////////////////////////////////
+	int counter;
   private:
+  
     List *readyList;  		// queue of threads that are ready to run,
+    List *otherList; //////////////////////
 				// but not running
 };
 

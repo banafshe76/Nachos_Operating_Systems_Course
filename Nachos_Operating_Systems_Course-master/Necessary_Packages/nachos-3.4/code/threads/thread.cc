@@ -88,7 +88,7 @@ Thread::~Thread()
 
    
 
-void  Thread::Fork(VoidFunctionPtr func, int arg)
+void  Thread::Fork(VoidFunctionPtr func, int arg,int p)///////////////////////////////////////////////////////
 {
     DEBUG('t', "Forking thread \"%s\" with func = 0x%x, arg = %d\n",
 	  name, (int) func, arg);
@@ -98,7 +98,8 @@ void  Thread::Fork(VoidFunctionPtr func, int arg)
     IntStatus oldLevel = interrupt->SetLevel(IntOff);
     
     //if( this ->totalTime == 0)
-    scheduler->ReadyToRun(this);	// ReadyToRun assumes that interrupts 
+    this->priority = p;
+    scheduler->ReadyToRun2(this);	// ReadyToRun assumes that interrupts 
 					// are disabled!
     (void) interrupt->SetLevel(oldLevel);
 }  

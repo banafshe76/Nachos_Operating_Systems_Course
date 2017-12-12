@@ -44,6 +44,8 @@ class List {
   public:
     List();			// initialize the list
     ~List();			// de-allocate the list
+    int size;//////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
 
     void Prepend(void *item); 	// Put item at the beginning of the list
     void Append(void *item); 	// Put item at the end of the list

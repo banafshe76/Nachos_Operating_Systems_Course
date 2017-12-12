@@ -29,7 +29,10 @@
 
 Scheduler::Scheduler()
 { 
-    readyList = new List; 
+	counter = 0;
+	b = 1;
+    readyList = new List;
+    otherList = new List; 
 } 
 
 //----------------------------------------------------------------------
@@ -59,8 +62,26 @@ Scheduler::ReadyToRun (Thread *thread)
     DEBUG('t', "Putting thread %s on ready list.\n", thread->getName());
 
     thread->setStatus(READY);
-    readyList->SortedInsert((void *)thread, thread->totalTime);
+    readyList->SortedInsert((void *)thread, thread->measure);
 }
+
+void
+Scheduler::ReadyToRun2 (Thread *thread)
+{
+    DEBUG('t', "Putting thread %s on ready list.\n", thread->getName());
+
+    thread->setStatus(READY);
+    if (counter%2 == 0){
+		readyList->SortedInsert((void *)thread, thread->totalTime);
+		counter++;
+	}
+	else if (counter%2 == 1){
+		otherList->SortedInsert((void *)thread, thread->priority*(-1));
+		counter++;
+	}
+}
+
+
 
 //----------------------------------------------------------------------
 // Scheduler::FindNextToRun
@@ -81,7 +102,13 @@ Thread* Scheduler::FindNextToRun ()
 {
 	if( currentThread->totalTime == 0)
 		setToTime();
-    return (Thread *)readyList->Remove();
+	else if(b){	
+		std::cout<<"here\n";
+		//(Thread *)readyList->Remove();		
+		halfFunc();
+		b = 0;			
+	} 
+		return (Thread *)readyList->Remove();
     
 }
 
@@ -157,4 +184,48 @@ Scheduler::Print()
 {
     printf("Ready list contents:\n");
     readyList->Mapcar((VoidFunctionPtr) ThreadPrint);
+}
+
+void Scheduler::halfFunc()
+{
+/*
+	while(!otherList->IsEmpty()){
+	void * t = otherList->Remove();
+	readyList->Append(t);
+	//std::cout <<"PPPPP"<<((Thread*)t)->priority<<"\n";
+	}
+	List *ex = new List;
+	int i=1;
+	while(!readyList->IsEmpty()){
+	void * t = readyList->Remove();
+	((Thread*)t)->measure=i;
+	ex->Append(t);
+	i++;}
+	while(!ex->IsEmpty()){
+	void * t = ex->Remove();
+	readyList->Append(t);
+	std::cout <<"PPPPP"<<((Thread*)t)->priority<<"and"<<((Thread*)t)->measure<<"\n";}*/
+
+	List *ex = new List;
+	int i=1;
+	while(!readyList->IsEmpty()){
+	void * t = readyList->Remove();
+	ex->SortedInsert(t, ((Thread*)t)->totalTime);}
+
+	List *ey = new List;
+	while(!otherList->IsEmpty()){
+	void * t = otherList->Remove();
+	ex->SortedInsert(t, ((Thread*)t)->priority);
+	//std::cout <<"PPPPP"<<((Thread*)t)->priority<<"\n";
+	}
+	while(!ex->IsEmpty()){
+	void * t = ex->Remove();
+	((Thread*)t)->measure=i;
+	readyList->Append(t);
+	i++;}
+	while(!ey->IsEmpty()){
+	void * t = ey->Remove();
+	((Thread*)t)->measure=i;
+	readyList->Append(t);
+	i++;}
 }

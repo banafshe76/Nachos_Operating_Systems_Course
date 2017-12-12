@@ -42,7 +42,8 @@ ListElement::ListElement(void *itemPtr, int sortKey)
 
 List::List()
 { 
-    first = last = NULL; 
+    first = last = NULL;
+    size=0; 
 }
 
 //----------------------------------------------------------------------
@@ -77,7 +78,7 @@ void
 List::Append(void *item)
 {
     ListElement *element = new ListElement(item, 0);
-
+	size++;
     if (IsEmpty()) {		// list is empty
 	first = element;
 	last = element;
@@ -104,6 +105,7 @@ List::Prepend(void *item)
 {
     ListElement *element = new ListElement(item, 0);
 
+	size++;
     if (IsEmpty()) {		// list is empty
 	first = element;
 	last = element;
@@ -178,6 +180,8 @@ List::IsEmpty()
 void
 List::SortedInsert(void *item, int sortKey)
 {
+	
+	size++;
     ListElement *element = new ListElement(item, sortKey);
     ListElement *ptr;		// keep track
 
@@ -217,6 +221,7 @@ List::SortedInsert(void *item, int sortKey)
 void *
 List::SortedRemove(int *keyPtr)
 {
+	size--;
     ListElement *element = first;
     void *thing;
 
