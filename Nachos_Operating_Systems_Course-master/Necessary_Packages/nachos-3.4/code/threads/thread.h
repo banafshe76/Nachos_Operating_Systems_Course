@@ -39,7 +39,6 @@
 
 #include "copyright.h"
 #include "utility.h"
-#include <time.h>
 
 #ifdef USER_PROGRAM
 #include "machine.h"
@@ -80,11 +79,10 @@ class Thread {
     // THEY MUST be in this position for SWITCH to work.
     int* stackTop;			 // the current stack pointer
     int machineState[MachineStateSize];  // all registers except for stackTop
-    
 
   public:
-    int timeCost;
-
+	int totalTime;
+	int startTime;
     Thread(char* debugName);		// initialize a Thread 
     ~Thread(); 				// deallocate a Thread
 					// NOTE -- thread being deleted
@@ -92,6 +90,7 @@ class Thread {
 					// is called
 
     // basic thread operations
+	void RunToSetTime(VoidFunctionPtr func, int arg);
 
     void Fork(VoidFunctionPtr func, int arg); 	// Make thread run (*func)(arg)
     void Yield();  				// Relinquish the CPU if any 
@@ -105,9 +104,6 @@ class Thread {
     void setStatus(ThreadStatus st) { status = st; }
     char* getName() { return (name); }
     void Print() { printf("%s, ", name); }
-    
-    void runToSetTime(VoidFunctionPtr func, int arg);
-
 
   private:
     // some of the private data for this class is listed above

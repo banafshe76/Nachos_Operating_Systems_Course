@@ -110,3 +110,15 @@ Condition::~Condition() { }
 void Condition::Wait(Lock* conditionLock) { ASSERT(FALSE); }
 void Condition::Signal(Lock* conditionLock) { }
 void Condition::Broadcast(Lock* conditionLock) { }
+/*void Thread::RunToSetTime(VoidFunctionPtr func, int arg)
+{
+    DEBUG('t', "Forking thread \"%s\" with func = 0x%x, arg = %d\n",
+	  name, (int) func, arg);
+    
+    StackAllocate(func, arg);
+
+    IntStatus oldLevel = interrupt->SetLevel(IntOff);
+    scheduler->ReadyToFirstRun(this);	// ReadyToRun assumes that interrupts 
+					// are disabled!
+    (void) interrupt->SetLevel(oldLevel);
+} */

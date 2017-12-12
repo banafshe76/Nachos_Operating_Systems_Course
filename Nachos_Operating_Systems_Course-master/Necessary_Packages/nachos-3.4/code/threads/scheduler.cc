@@ -21,7 +21,7 @@
 #include "copyright.h"
 #include "scheduler.h"
 #include "system.h"
-
+#include <iostream>
 //----------------------------------------------------------------------
 // Scheduler::Scheduler
 // 	Initialize the list of ready but not running threads to empty.
@@ -40,6 +40,7 @@ Scheduler::Scheduler()
 Scheduler::~Scheduler()
 { 
     delete readyList; 
+   //+ lastTime = time(0);
 } 
 
 //----------------------------------------------------------------------
@@ -50,13 +51,15 @@ Scheduler::~Scheduler()
 //	"thread" is the thread to be put on the ready list.
 //----------------------------------------------------------------------
 
+
+
 void
 Scheduler::ReadyToRun (Thread *thread)
 {
     DEBUG('t', "Putting thread %s on ready list.\n", thread->getName());
 
     thread->setStatus(READY);
-    readyList->SortedInsert((void *)thread, thread->timeCost);
+    readyList->SortedInsert((void *)thread, thread->totalTime);
 }
 
 //----------------------------------------------------------------------
@@ -66,11 +69,20 @@ Scheduler::ReadyToRun (Thread *thread)
 // Side effect:
 //	Thread is removed from the ready list.
 //----------------------------------------------------------------------
-
-Thread *
-Scheduler::FindNextToRun ()
+void Scheduler::setToTime()
 {
+	currentThread->totalTime = time(0) - currentThread->startTime  ;
+	std::cout<<"ThreadName:    "<<currentThread->getName()<<"\ntotalTime\n"<<currentThread->totalTime<<"\n";
+//	lastTime = time(0);
+}
+
+
+Thread* Scheduler::FindNextToRun ()
+{
+	if( currentThread->totalTime == 0)
+		setToTime();
     return (Thread *)readyList->Remove();
+    
 }
 
 //----------------------------------------------------------------------
@@ -90,6 +102,7 @@ Scheduler::FindNextToRun ()
 void
 Scheduler::Run (Thread *nextThread)
 {
+	nextThread->startTime = time(0);
     Thread *oldThread = currentThread;
     
 #ifdef USER_PROGRAM			// ignore until running user programs 
@@ -145,8 +158,3 @@ Scheduler::Print()
     printf("Ready list contents:\n");
     readyList->Mapcar((VoidFunctionPtr) ThreadPrint);
 }
-
-
-//----------------------------set time------------------------------------------
-
-	

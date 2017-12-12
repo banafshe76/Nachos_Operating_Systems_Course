@@ -20,7 +20,6 @@
 #include "synch.h"
 #include "system.h"
 #include <iostream>
-
 #define STACK_FENCEPOST 0xdeadbeef	// this is put at the top of the
 					// execution stack, for detecting 
 					// stack overflows
@@ -35,12 +34,12 @@
 
 Thread::Thread(char* threadName)
 {
-	
     name = threadName;
+    startTime = time(0);
+    totalTime = 0;
     stackTop = NULL;
     stack = NULL;
     status = JUST_CREATED;
-    timeCost = 0;
 #ifdef USER_PROGRAM
     space = NULL;
 #endif
@@ -87,8 +86,9 @@ Thread::~Thread()
 //	"arg" is a single argument to be passed to the procedure.
 //----------------------------------------------------------------------
 
-void 
-Thread::Fork(VoidFunctionPtr func, int arg)
+   
+
+void  Thread::Fork(VoidFunctionPtr func, int arg)
 {
     DEBUG('t', "Forking thread \"%s\" with func = 0x%x, arg = %d\n",
 	  name, (int) func, arg);
@@ -96,29 +96,12 @@ Thread::Fork(VoidFunctionPtr func, int arg)
     StackAllocate(func, arg);
 
     IntStatus oldLevel = interrupt->SetLevel(IntOff);
-    scheduler->ReadyToRun(this);	// ReadyToRun assumes that interrupts 
-					// are disabled!
-    (void) interrupt->SetLevel(oldLevel);
-}    
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void Thread::runToSetTime(VoidFunctionPtr func, int arg){
-	int t1 = time(0);
-	StackAllocate(func, arg);
-
-    IntStatus oldLevel = interrupt->SetLevel(IntOff);
-    scheduler->ReadyToRun(this);	// ReadyToRun assumes that interrupts 
-					// are disabled!
-    (void) interrupt->SetLevel(oldLevel);
     
-    timeCost = (int)time(0) - t1;
-    std::cout << "qqqqqqqqqqqqqqqqqq" << timeCost << "\n";
-}
-
-
-
+    //if( this ->totalTime == 0)
+    scheduler->ReadyToRun(this);	// ReadyToRun assumes that interrupts 
+					// are disabled!
+    (void) interrupt->SetLevel(oldLevel);
+}  
 //----------------------------------------------------------------------
 // Thread::CheckOverflow
 // 	Check a thread's stack to see if it has overrun the space
